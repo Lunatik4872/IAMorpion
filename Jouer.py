@@ -5,7 +5,7 @@ jeu = [0,0,0, 0,0,0, 0,0,0]
 gagnant = None
 
 IA = tf.keras.models.load_model('IA.keras')
-
+ 
 def update_weights(jeu, reward):
     reward = tf.convert_to_tensor(reward, dtype=tf.float32)
     loss = tf.keras.losses.MeanSquaredError()
