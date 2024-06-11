@@ -1,14 +1,20 @@
 import tensorflow as tf
 from Train import *
 import numpy
+import os
 
 model = tf.keras.models.Sequential()
 
-model.add(tf.keras.layers.Dense(15, activation='relu', input_shape=(9,)))
+model.add(tf.keras.layers.Dense(9, activation='relu', input_shape=(9,)))
+model.add(tf.keras.layers.Dropout(0.2))
 model.add(tf.keras.layers.Dense(20, activation='relu'))
-model.add(tf.keras.layers.Dense(20, activation='relu'))
+model.add(tf.keras.layers.Dropout(0.2))
+model.add(tf.keras.layers.Dense(40, activation='relu'))
+model.add(tf.keras.layers.Dropout(0.2))
+model.add(tf.keras.layers.Dense(60, activation='relu'))
 
 model.add(tf.keras.layers.Dense(9, activation='softmax'))
+
 
 model.summary()
 
@@ -16,17 +22,20 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
 def train() :
+    ep = 0
+    try : os.remove("IA.keras")
+    except : print("OHHHHH!")
     for i in range(len(X)) :
         jeu = tf.expand_dims(tf.convert_to_tensor(X[i]), axis=0)
         rep = tf.expand_dims(tf.convert_to_tensor(Y[i]), axis=0)
-        for epoch in range(100):
+        for epoch in range(ep):
             history = model.fit(jeu, rep, epochs=1, verbose=0)
 
             pourcent = (i * 500 + epoch) / (len(X) * 500)
             nb_eq = int(pourcent * 10)
             progress_bar = '=' * nb_eq + '-' * (10 - nb_eq)
 
-            training_status = f"Entraînement {i+1}/{len(X)} ({epoch+1}/100)"
+            training_status = f"Entraînement {i+1}/{len(X)} ({epoch+1}/{ep})"
             output = f"|[{progress_bar}]| {int(pourcent*100)}% || {training_status}"
                         
             print(f"\r\033[K{output}", end='')
